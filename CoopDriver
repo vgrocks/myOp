@@ -1,0 +1,70 @@
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.concurrent.TimeUnit;
+
+import jxl.read.biff.BiffException;
+import jxl.write.WriteException;
+
+import org.junit.Test;
+import org.openqa.selenium.firefox.FirefoxDriver;
+import org.openqa.selenium.WebDriver;
+
+public class CoopDriver {
+	public static WebDriver driver;
+	public static String userName = null;
+	public static String passWord = null;
+	public static String Email = null;
+	public static String title = null;
+	public static String testStatus = null;
+
+	// @BeforeClass
+	public static void setUp() throws BiffException, IOException {
+		driver = new FirefoxDriver();
+
+	}
+
+	@Test
+	public void runTest() throws InterruptedException, IOException,
+			BiffException, WriteException {
+		testStatus = "Not Yet Run";
+		System.out.println("Total number of rows for this test suite is");
+		HashMap<Integer, HashMap<String, String>> map;
+		HashMap<String, String> eachRow;
+		// Utils.fileStatus();
+		map = Utils.readExcelLogin();
+		for (int i = 1; i <= map.size(); i++) {
+			testStatus = "FAIL";
+			
+			dataClass.accessData();
+			setUp();
+			driver.get(Config.coopURL);
+			eachRow = map.get(i);
+			Email = eachRow.get("Email");
+			userName = eachRow.get("Username");
+			passWord = eachRow.get("Password");
+			title = eachRow.get("Title");
+			System.out.println("This is test number " + i + " from "
+					+ Utils.logIn);
+
+			driver.manage().window().maximize();
+			driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+			// Thread.sleep(2000);
+			// Utils.switchToChildWindow(driver);
+			// Any methods or tests go here
+			PageObjects obj = new PageObjects(driver, eachRow);
+			// PageObjects.CadLoginScreen(null, null);
+			obj.loginScreen();
+//			obj.contactScreen();
+			
+			testStatus = "PASS";
+			
+			// Log off			
+			Utils.logOff(driver);
+
+		}
+		ReportUtils rep = new ReportUtils();
+		rep.writeEx();
+
+	}
+
+}
