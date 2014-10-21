@@ -1,0 +1,194 @@
+import java.io.File;
+import java.io.FileInputStream;
+import java.util.*;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+
+import jxl.Sheet;
+import jxl.Workbook;
+import jxl.read.biff.BiffException;
+
+import org.apache.commons.io.FileUtils;
+import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
+
+public class Utils {
+
+	// location of excel file to read data from
+	public static String logIn = "C:/EclipseProjects/coopData.xls";	
+	public static String strTodaysDate;
+	public static int totalRows;
+	public static Sheet s;
+	static WebDriver driver;
+
+
+	public static void captureScreen(WebDriver driver) throws IOException {
+
+		File scrFile = ((TakesScreenshot) driver)
+				.getScreenshotAs(OutputType.FILE);
+		try {
+			java.util.Date date = new java.util.Date();
+			String timestamp = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss")
+					.format(date.getTime());
+			timestamp = timestamp.replace(":", "_");
+			FileUtils.copyFile(scrFile,
+					new File(System.getProperty("user.dir\\"), " " + timestamp
+							+ ".jpg"));
+		} catch (IOException exception) {
+			System.out.println(exception.toString());
+			exception.printStackTrace();
+		}
+		System.out.println("Screenshot taken successfully.");
+	}
+
+	public static boolean isLogonSuccessful(WebDriver driver)
+			throws InterruptedException, IOException {
+		try {
+			driver.findElement(By.id("item-prefix"));
+			System.out.println("Logon to the Co-Op is successful");
+			captureScreen(driver);
+		} catch (Exception e) {
+			System.out.println("Logon to Co-Op is Unsuccessful");
+			captureScreen(driver);
+			logOff(driver);
+		}
+		return false;
+	}
+
+	public static void logOff(WebDriver driver) throws InterruptedException {
+
+		driver.close();
+		driver.quit();
+		System.out.println("All browsers closed \n");
+	}
+
+	public static WebDriver switchToChildWindow(WebDriver driver) {
+
+		String parentWindow = driver.getWindowHandle();
+		Set<String> handles = driver.getWindowHandles();
+		int i = 0;
+		for (String windowHandle : handles) {
+			i = i + 1;
+			System.out.println("i" + Integer.toString(i));
+			if (!windowHandle.equals(parentWindow)) {
+				driver = driver.switchTo().window(windowHandle);
+				System.out.println(driver.getTitle());
+			}
+		}
+		return driver;
+	}
+
+	public static HashMap<Integer, HashMap<String, String>> readExcelLogin()
+			throws IOException, BiffException {
+
+		HashMap<Integer, HashMap<String, String>> map = new HashMap<Integer, HashMap<String, String>>();
+		HashMap<String, String> eachRow;
+
+		Sheet s;
+		FileInputStream excel = new FileInputStream(logIn);
+		Workbook workbook = Workbook.getWorkbook(excel);
+		s = workbook.getSheet(0);
+//		System.out.println(s.getRows());
+		// minus 1 to exclude headers		
+	
+//	
+
+		for (int row = 1; row < s.getRows(); row++) {
+			eachRow = new HashMap<String, String>();
+			eachRow.put(s.getCell(0, 0).getContents(), s.getCell(0, row)
+					.getContents());
+			eachRow.put(s.getCell(1, 0).getContents(), s.getCell(1, row)
+					.getContents());
+			eachRow.put(s.getCell(2, 0).getContents(), s.getCell(2, row)
+					.getContents());
+			eachRow.put(s.getCell(3, 0).getContents(), s.getCell(3, row)
+					.getContents());
+			// to record 4 plus column titles
+			// from below is record 5 onwards
+			eachRow.put(s.getCell(4, 0).getContents(), s.getCell(4, row)
+					.getContents());
+			eachRow.put(s.getCell(5, 0).getContents(), s.getCell(5, row)
+					.getContents());
+			eachRow.put(s.getCell(6, 0).getContents(), s.getCell(6, row)
+					.getContents());
+			eachRow.put(s.getCell(7, 0).getContents(), s.getCell(7, row)
+					.getContents());
+			eachRow.put(s.getCell(8, 0).getContents(), s.getCell(8, row)
+					.getContents());
+			eachRow.put(s.getCell(9, 0).getContents(), s.getCell(9, row)
+					.getContents());
+			eachRow.put(s.getCell(10, 0).getContents(), s.getCell(10, row)
+					.getContents());
+			eachRow.put(s.getCell(11, 0).getContents(), s.getCell(11, row)
+					.getContents());
+			eachRow.put(s.getCell(12, 0).getContents(), s.getCell(12, row)
+					.getContents());
+			eachRow.put(s.getCell(13, 0).getContents(), s.getCell(13, row)
+					.getContents());
+			eachRow.put(s.getCell(14, 0).getContents(), s.getCell(14, row)
+					.getContents());
+			eachRow.put(s.getCell(15, 0).getContents(), s.getCell(15, row)
+					.getContents());
+			eachRow.put(s.getCell(16, 0).getContents(), s.getCell(16, row)
+					.getContents());
+			// eachRow.put(s.getCell(17, 0).getContents(), s.getCell(17, row)
+			// .getContents());
+			map.put(row, eachRow);
+
+		}
+
+		return map;
+	}
+
+	public static void fileStatus() throws IOException, BiffException {
+		// Construct a File object for the given file.
+		File f = new File(logIn);
+		// f here is a manipulated version
+		// See if it actually exists
+		if (!f.exists()) {
+			System.out.println("file not found");
+			System.out.println(); // Blank line
+			return;
+		}
+		// Print full name
+		System.out.println("Canonical name " + f.getCanonicalPath());
+		// Print parent directory if possible
+		String p = f.getParent();
+		if (p != null) {
+			System.out.println("Parent directory: " + p);
+		}
+		// Check if the file is readable
+		if (f.canRead()) {
+			System.out.println("File is readable.");
+			System.out.println(f);
+
+		}
+		// Check if the file is writable
+		if (f.canWrite()) {
+			System.out.println("File is writable.");
+		}
+		// Report on the modification time.
+		Date d = new Date();
+		d.setTime(f.lastModified());
+		System.out.println("Last modified " + d);
+		// See if file, directory, or other. If file, print size.
+		if (f.isFile()) {
+			// Report on the file's size
+			System.out.println("File size is " + f.length() + "bytes.");
+		} else if (f.isDirectory()) {
+			System.out.println("It's a directory");
+		} else {
+			System.out.println("I dunno! Neither a file nor a directory!");
+		}
+		System.out.println(); // blank line between entries
+	}
+	
+	public static void currentDate(){
+	Date cur_dt = new Date();
+	DateFormat dateFormat = new SimpleDateFormat("EEEE dd MMMM");
+	strTodaysDate = dateFormat.format(cur_dt);
+	}
+}
