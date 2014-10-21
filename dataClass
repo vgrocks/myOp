@@ -1,0 +1,34 @@
+import java.io.IOException;
+import java.util.HashMap;
+
+import jxl.read.biff.BiffException;
+
+
+public class dataClass {
+	
+	public static String userName = null;
+	public static String passWord = null;
+	public static String Email = null;
+	public static String title = null;
+
+	public dataClass() {
+		// TODO Auto-generated constructor stub
+	}
+
+	
+	public static void accessData() throws BiffException, IOException{
+		
+		System.out.println("Total number of rows for this test suite is");
+		HashMap<Integer, HashMap<String, String>> map;
+		HashMap<String, String> eachRow;
+		//Utils.fileStatus();
+		map = Utils.readExcelLogin();
+		for (int i = 1; i <= map.size(); i++) {		
+			eachRow = map.get(i);
+			Email= eachRow.get("Email");			
+			userName = eachRow.get("Username");
+			passWord = eachRow.get("Password");
+			title = eachRow.get("Title");
+		}
+	}
+}
