@@ -1,0 +1,100 @@
+import java.io.IOException;
+import java.util.HashMap;
+
+import jxl.read.biff.BiffException;
+
+import org.apache.commons.lang3.RandomStringUtils;
+import org.openqa.selenium.By;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+
+public class PageObjects {
+
+	private WebDriver driver;
+	private HashMap<String, String> eachRow;
+
+	public PageObjects(WebDriver driver, HashMap<String, String> eachRow) {
+		this.driver = driver;
+		this.eachRow = eachRow;
+	}
+
+	public void loginScreen() throws InterruptedException, IOException,
+			BiffException {
+
+		String random = RandomStringUtils.randomAlphabetic(5);
+//		System.out.println(random + eachRow.get("Email"));
+//		Utils.fileStatus();		
+		driver.findElement(By.id("email_address")).clear();
+		driver.findElement(By.id("email_address")).sendKeys(
+				random + eachRow.get("Email"));
+		driver.findElement(By.id("password")).sendKeys(eachRow.get("Username"));
+		driver.findElement(By.id("confirmation")).sendKeys(
+				eachRow.get("Password"));
+		Thread.sleep(1000);
+		driver.findElement(By.id("membership-submit")).click();
+		Thread.sleep(2000);
+//		Utils.isLogonSuccessful(driver);
+	}
+
+	public void contactScreen() throws InterruptedException {
+		// title is item-prefix
+		System.out.println(eachRow.get("Title"));
+		WebElement selectTitle = driver.findElement(By.id("item-prefix"));
+		selectTitle.sendKeys(eachRow.get("Title"));
+		// First name
+		System.out.println(eachRow.get("FirstName"));
+		driver.findElement(By.id("membership_first_name")).sendKeys(
+				eachRow.get("FirstName"));
+		selectTitle.sendKeys(eachRow.get("FirstName"));
+		// Last name
+		System.out.println(eachRow.get("LastName"));
+		driver.findElement(By.id("membership_last_name")).sendKeys(
+				eachRow.get("LastName"));
+		// gender
+		WebElement selectGender = driver.findElement(By.id("gender"));
+		selectGender.sendKeys(eachRow.get("Gender"));
+		// day
+		WebElement selectDay = driver.findElement(By.id("day"));
+		selectDay.sendKeys(eachRow.get("Day"));
+		// month
+		WebElement selectMonth = driver.findElement(By.id("month"));
+		selectMonth.sendKeys(eachRow.get("Month"));
+		// year
+		WebElement selectYear = driver.findElement(By.id("year"));
+		selectYear.sendKeys(eachRow.get("Year"));
+		// Phone type
+		WebElement selectPhoneType = driver.findElement(By
+				.id("item-contactnumbertype"));
+		selectPhoneType.sendKeys(eachRow.get("PhoneType"));
+		// number
+		driver.findElement(By.id("membership_contact_number")).sendKeys(
+				eachRow.get("PhoneNumber"));
+		// House number
+		driver.findElement(By.id("membership_unit")).sendKeys(
+				eachRow.get("HouseNum"));
+		// Street name
+		driver.findElement(By.id("membership_street_1")).sendKeys(
+				eachRow.get("StreetName"));
+		// suburb
+		driver.findElement(By.id("address_city")).sendKeys(
+				eachRow.get("Suburb"));
+		// state
+		WebElement selectState = driver.findElement(By.id("region_id"));
+		selectState.sendKeys(eachRow.get("State"));
+		// postcode
+		driver.findElement(By.id("membership_postcode")).sendKeys(
+				eachRow.get("PostCode"));
+		Thread.sleep(1000);
+		// submit button
+		driver.findElement(By.id("membership-submit")).click();
+		Thread.sleep(1000);
+		// submit button About You
+		driver.findElement(By.id("membership-submit")).click();
+		Thread.sleep(1000);
+		// submit button Member Card
+		driver.findElement(By.id("membership-submit")).click();
+		Thread.sleep(1000);
+		Config.testStatus = "PASS";
+	}
+
+}
