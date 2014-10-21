@@ -1,0 +1,14 @@
+
+public class Config {
+
+	public static String coopURL = "https://www2.coop.com.au/join";
+	public static String testP = "PASS";
+	public static String testF = "FAIL";
+	public static String testStatus;
+	
+	
+	public Config() {
+		// TODO Auto-generated constructor stub		
+	}
+
+}
